@@ -38,6 +38,7 @@ import SingleCon from "./pages/SingleContact/SingleCon";
 import ListFacture from "./pages/Facture/Facture";
 import Liscourse from "./pages/Course/course";
 import Whatsup from "./pages/whatsup/whatsup";
+import Changemotdepasse from "./pages/UpdmotpasseChauf/UpdmotdepasseChauf";
 import "./style/dark.scss";
 import Gps from "./pages/gps/gps.jsx";
 import { useContext } from "react";
