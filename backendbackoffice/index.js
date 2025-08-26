@@ -35,6 +35,7 @@ const rides = require("./routes/RideRoute");
 const factureRoute = require("./routes/factureRoutes.js")
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const whatsup = require("./routes/whatsappRoutes");
 const { runAggregation } = require("./Controllers/RideController"); // Export runAggregation function
 const {
   generateFactures,
@@ -102,6 +103,7 @@ app.use("/Con", con);
 app.use("/facture",factureRoute);
 
 app.use("/Ride", rides);
+app.use("/whatsapp", whatsup);
 
 app.get("/testAggregation", async (req, res) => {
   try {
