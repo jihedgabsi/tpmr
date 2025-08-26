@@ -21,7 +21,7 @@ const config = {
 const firestoreApp = admin.initializeApp(
   {
     credential:  admin.credential.cert(config),
-    databaseURL: "https://prd-transport-default-rtdb.europe-west1.firebasedatabase.app",
+    databaseURL: "https://tpmr-transport-default-rtdb.europe-west1.firebasedatabase.app",
   },
   "firestoreApp"
 );
