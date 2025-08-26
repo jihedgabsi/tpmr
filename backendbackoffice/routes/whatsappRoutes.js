@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const whatsappController = require('../Controllersfr/whatsappController');
+const whatsappController = require('../Controllers/whatsappController');
 
 router.post('/start', whatsappController.startWhatsApp);
 router.get('/qrcode', whatsappController.getQRCode);
