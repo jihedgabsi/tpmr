@@ -8,7 +8,7 @@ const FTP_HOST = process.env.FTP_HOST;
 const FTP_USER = process.env.FTP_USER;
 const FTP_PASSWORD = process.env.FTP_PASSWORD;
 const FTP_DIR = 'upload';  // Conservé comme dans le code original
-const BASE_URL = 'https://backend.tunisieuber.com/afficheimage/image';  // Conservé comme dans le code original
+const BASE_URL = 'http://e8ks4000oocs8gco0o44w08c.147.79.115.197.sslip.io/afficheimage/image';  // Conservé comme dans le code original
 
 /**
  * Fonction pour télécharger un fichier avec réessais automatiques
