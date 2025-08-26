@@ -19,8 +19,7 @@ const tariftransfert = require("./routes/TariftransfertRoute");
 const paymentRoutes = require('./routes/paymentRoutes');
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-const Voifr = require("./routes/Voiturefranceroute");
-const chaufffr = require("./routes/chauffeurfrranceRoute");
+
 mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -65,8 +64,6 @@ app.use("/users", usersRouter);
 app.use("/afficheimage", afficheimage);
 app.use("/Chauff", Agentchauff);
 app.use("/Voi", Voi);
-app.use("/Chaufffrance", chaufffr);
-app.use("/Voifrance", Voifr);
 app.use("/Con", con);
 app.use("/hist", his);
 app.use("/transfert", transfert);
