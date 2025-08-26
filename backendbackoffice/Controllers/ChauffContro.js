@@ -17,7 +17,7 @@ const Chauffeur = require("../Models/Chauffeur");
 const PDFDocument = require("pdfkit");
 const querystring = require("querystring");
 const https = require("https");
-const whatsappController = require('../Controllersfr/whatsappController');
+
 
 const fs = require("fs");
 
@@ -1626,7 +1626,7 @@ async function sendwhatsup(motdepasse, numtel) {
     })
   };
 
-  await whatsappController.sendMessage(req, res);
+  
 }
 
 module.exports = {
