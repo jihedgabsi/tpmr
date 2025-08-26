@@ -166,7 +166,7 @@ const updateDriverBalance = async (firebaseUID, addedBalance) => {
     try {
         // Récupérer le solde actuel du chauffeur
         const response = await axios.get(
-            `https://api.backofficegc.com/Solde/solde/${firebaseUID}`
+            `http://e8ks4000oocs8gco0o44w08c.147.79.115.197.sslip.io/Solde/solde/${firebaseUID}`
         );
         const currentBalance = response.data?.solde || 0;
         
