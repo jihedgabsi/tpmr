@@ -1,0 +1,146 @@
+const qrcode = require('qrcode');
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const Chauffeurtn = require("../Models/Chauffeur");
+// Active le mode furtif pour éviter les blocages
+puppeteer.use(StealthPlugin());
+
+let whatsappScanQR = null;
+let isWhatsAppConnected = false;
+let isClientInitialized = false;
+
+
+const client = new Client({
+    authStrategy: new LocalAuth(),
+    puppeteer: {
+        headless: true, // Exécuter sans interface graphique
+        args: ['--no-sandbox', '--disable-setuid-sandbox'], // Éviter les erreurs liées aux permissions
+    }
+});
+client.on('qr', async (qr) => {
+    console.log('QR Code reçu:', qr);
+    whatsappScanQR = await qrcode.toDataURL(qr);
+});
+
+client.on('ready', () => {
+    console.log('✅ WhatsApp Web connecté !');
+    isWhatsAppConnected = true;
+});
+
+client.on('disconnected', (reason) => {
+    console.log('❌ Déconnecté de WhatsApp:', reason);
+    isWhatsAppConnected = false;
+    isClientInitialized = false;
+    whatsappScanQR = null;
+});
+
+
+// Démarrer WhatsApp Web
+exports.startWhatsApp = async (req, res) => {
+    if (isWhatsAppConnected) {
+        return res.json({ success: true, message: "✅ WhatsApp est déjà connecté." });
+    }
+
+    if (isClientInitialized) {
+        return res.json({ success: true, message: "🕒 WhatsApp est en cours de connexion..." });
+    }
+
+    try {
+        client.initialize();
+        isClientInitialized = true;
+        res.json({ success: true, message: "🚀 WhatsApp en cours de démarrage..." });
+    } catch (err) {
+        console.error("Erreur lors de l'initialisation de WhatsApp:", err);
+        res.status(500).json({ error: "❌ Échec de l'initialisation de WhatsApp." });
+    }
+};
+
+
+// Obtenir le QR Code
+exports.getQRCode = (req, res) => {
+    if (!whatsappScanQR) {
+        return res.status(500).json({ error: "QR Code non disponible. Démarrez WhatsApp avec POST /whatsapp/start" });
+    }
+    res.json({ qrCode: whatsappScanQR });
+};
+
+// Envoyer un message
+exports.sendMessage = async (req, res) => {
+    const { phone, message } = req.body;
+
+    if (!phone || !message) {
+        return res.status(400).json({ error: "Numéro de téléphone et message requis." });
+    }
+
+    if (!isWhatsAppConnected) {
+        return res.status(403).json({ error: "WhatsApp n'est pas connecté. Veuillez scanner le QR Code." });
+    }
+
+    try {
+        await client.sendMessage(`${phone}@c.us`, message);
+        res.json({ success: true, message: `Message envoyé à ${phone}` });
+    } catch (error) {
+        console.error("Erreur lors de l'envoi du message:", error);
+        res.status(500).json({ error: "Erreur lors de l'envoi du message." });
+    }
+};
+
+
+
+
+
+exports.sendMessageaTousLesChauffeurtn = async (req, res) => {
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: "Le message est requis." });
+    }
+
+    if (!isWhatsAppConnected) {
+        return res.status(403).json({ error: "WhatsApp n'est pas connecté. Veuillez scanner le QR Code." });
+    }
+
+    try {
+        const chauffeurs = await Chauffeurtn.find();
+
+        if (!chauffeurs || chauffeurs.length === 0) {
+            return res.status(404).json({ error: "Aucun chauffeur trouvé." });
+        }
+
+        // Envoyer le message à chaque chauffeur
+        for (const chauffeur of chauffeurs) {
+            if (chauffeur.phone) {
+                await client.sendMessage(`${chauffeur.phone}@c.us`, message);
+            }
+        }
+
+        res.json({ success: true, message: `Message envoyé à tous les chauffeurs (${chauffeurs.length}).` });
+    } catch (error) {
+        console.error("Erreur lors de l'envoi des messages:", error);
+        res.status(500).json({ error: "Erreur lors de l'envoi des messages." });
+    }
+};
+
+// Vérifier le statut
+exports.getStatus = (req, res) => {
+    res.json({ isConnected: isWhatsAppConnected });
+};
+
+// Déconnexion de WhatsApp
+exports.logoutWhatsApp = async (req, res) => {
+    if (!isWhatsAppConnected) {
+        return res.json({ success: false, message: "WhatsApp n'est pas connecté." });
+    }
+
+    try {
+        await client.logout();
+        isWhatsAppConnected = false;
+        isClientInitialized = false;
+        whatsappScanQR = null;
+        res.json({ success: true, message: "WhatsApp déconnecté avec succès." });
+    } catch (error) {
+        console.error("Erreur lors de la déconnexion:", error);
+        res.status(500).json({ error: "Erreur lors de la déconnexion de WhatsApp." });
+    }
+};
