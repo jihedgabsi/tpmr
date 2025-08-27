@@ -90,7 +90,7 @@ const Datachauf = () => {
   const getDriverBalance = async (firebaseUID) => {
     try {
       const response = await axios.get(
-        `https://api.backofficegc.com/Solde/solde/${firebaseUID}`
+        `http://e8ks4000oocs8gco0o44w08c.147.79.115.197.sslip.io/Solde/solde/${firebaseUID}`
       );
       return response.data;
     } catch (error) {
