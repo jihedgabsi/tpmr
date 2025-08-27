@@ -266,7 +266,7 @@ const updateDriverBalance = async (firebaseUID, addedBalance) => {
       >
         <div style={{ fontSize: "18px", marginBottom: "5px" }}>Solde Total</div>
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {totalSolde !== null ? `${totalSolde} DT` : "Chargement..."}
+          {totalSolde !== null ? `0 DT` : "Chargement..."}
         </div>
       </div>
 
